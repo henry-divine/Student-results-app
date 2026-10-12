@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 
@@ -10,128 +11,65 @@ if "quiz_score" not in st.session_state:
     st.session_state.quiz_score = 0
 if "quiz_total" not in st.session_state:
     st.session_state.quiz_total = 0
-if "current_q_index" not in st.session_state:
-    st.session_state.current_q_index = 0
 
 subjects = [
     "Mathematics", "English Language", "Physics", "Chemistry", "Biology",
     "Civic Education", "Digital Technology", "Economics", "Geography"
 ]
 
-# Expanded WAEC Past Questions Bank
+# Comprehensive WAEC Past Questions Bank (Multiple questions per subject)
 waec_questions = {
     "Mathematics": [
-        {
-            "question": "Solve for x: 2x + 5 = 15",
-            "options": ["x = 3", "x = 5", "x = 10", "x = 7"],
-            "answer": "x = 5"
-        },
-        {
-            "question": "Evaluate 0.075 x 10^4",
-            "options": ["7.5", "75", "750", "7500"],
-            "answer": "750"
-        },
-        {
-            "question": "Find the simple interest on N5,000 for 2 years at 5% per annum.",
-            "options": ["N250", "N500", "N750", "N1,000"],
-            "answer": "N500"
-        }
+        {"question": "Solve for x: 2x + 5 = 15", "options": ["x = 3", "x = 5", "x = 10", "x = 7"], "answer": "x = 5"},
+        {"question": "Evaluate 0.075 x 10^4", "options": ["7.5", "75", "750", "7500"], "answer": "750"},
+        {"question": "Find the simple interest on N5,000 for 2 years at 5% per annum.", "options": ["N250", "N500", "N750", "N1,000"], "answer": "N500"},
+        {"question": "Factorize completely: 3x^2 - 12", "options": ["3(x-2)(x+2)", "3(x-4)(x+4)", "(3x-2)(x+2)", "3(x-2)^2"], "answer": "3(x-2)(x+2)"},
+        {"question": "If the interior angle of a regular polygon is 140°, find the number of sides.", "options": ["6", "8", "9", "10"], "answer": "9"}
     ],
     "English Language": [
-        {
-            "question": "Choose the word nearest in meaning to 'ABUNDANT':",
-            "options": ["Scarce", "Plentiful", "Small", "Empty"],
-            "answer": "Plentiful"
-        },
-        {
-            "question": "Choose the word that is opposite in meaning to 'ANCIENT':",
-            "options": ["Old", "Modern", "Antique", "Primitive"],
-            "answer": "Modern"
-        }
+        {"question": "Choose the word nearest in meaning to 'ABUNDANT':", "options": ["Scarce", "Plentiful", "Small", "Empty"], "answer": "Plentiful"},
+        {"question": "Choose the word opposite in meaning to 'ANCIENT':", "options": ["Old", "Modern", "Antique", "Primitive"], "answer": "Modern"},
+        {"question": "Choose the correct option to fill the gap: Neither the teacher nor the students ___ present.", "options": ["was", "were", "is", "has been"], "answer": "were"},
+        {"question": "What figure of speech is used in: 'The wind whispered through the dark trees'?", "options": ["Simile", "Metaphor", "Personification", "Hyperbole"], "answer": "Personification"}
     ],
     "Physics": [
-        {
-            "question": "What is the SI unit of force?",
-            "options": ["Joule", "Watt", "Newton", "Pascal"],
-            "answer": "Newton"
-        },
-        {
-            "question": "Which of the following is a vector quantity?",
-            "options": ["Speed", "Mass", "Velocity", "Distance"],
-            "answer": "Velocity"
-        }
+        {"question": "What is the SI unit of force?", "options": ["Joule", "Watt", "Newton", "Pascal"], "answer": "Newton"},
+        {"question": "Which of the following is a vector quantity?", "options": ["Speed", "Mass", "Velocity", "Distance"], "answer": "Velocity"},
+        {"question": "The time taken for a pendulum to complete one full oscillation is called:", "options": ["Frequency", "Period", "Amplitude", "Wavelength"], "answer": "Period"},
+        {"question": "What device is used to measure relative humidity?", "options": ["Hydrometer", "Barometer", "Hygrometer", "Manometer"], "answer": "Hygrometer"}
     ],
     "Chemistry": [
-        {
-            "question": "What is the chemical symbol for Gold?",
-            "options": ["Ag", "Au", "Fe", "Pb"],
-            "answer": "Au"
-        },
-        {
-            "question": "What is the pH of a neutral solution at 25°C?",
-            "options": ["0", "7", "14", "5"],
-            "answer": "7"
-        }
+        {"question": "What is the chemical symbol for Gold?", "options": ["Ag", "Au", "Fe", "Pb"], "answer": "Au"},
+        {"question": "What is the pH of a neutral solution at 25°C?", "options": ["0", "7", "14", "5"], "answer": "7"},
+        {"question": "Which gas turns limewater milky?", "options": ["Oxygen", "Hydrogen", "Carbon (IV) oxide", "Nitrogen"], "answer": "Carbon (IV) oxide"},
+        {"question": "The process of separation of mixtures based on boiling points is called:", "options": ["Filtration", "Fractional distillation", "Evaporation", "Chromatography"], "answer": "Fractional distillation"}
     ],
     "Biology": [
-        {
-            "question": "Which organelle is known as the powerhouse of the cell?",
-            "options": ["Nucleus", "Ribosome", "Mitochondria", "Chloroplast"],
-            "answer": "Mitochondria"
-        },
-        {
-            "question": "The ultimate source of energy for all ecosystems is:",
-            "options": ["Green plants", "The Sun", "Water", "Soil nutrients"],
-            "answer": "The Sun"
-        }
+        {"question": "Which organelle is known as the powerhouse of the cell?", "options": ["Nucleus", "Ribosome", "Mitochondria", "Chloroplast"], "answer": "Mitochondria"},
+        {"question": "The ultimate source of energy for all ecosystems is:", "options": ["Green plants", "The Sun", "Water", "Soil nutrients"], "answer": "The Sun"},
+        {"question": "Which of the following blood groups is known as the universal donor?", "options": ["Group A", "Group B", "Group AB", "Group O"], "answer": "Group O"},
+        {"question": "The mammalian kidney is the primary organ for:", "options": ["Digestion", "Respiration", "Excretion & Osmoregulation", "Circulation"], "answer": "Excretion & Osmoregulation"}
     ],
     "Civic Education": [
-        {
-            "question": "Which of the following is a key characteristic of democracy?",
-            "options": ["Rule of Law", "Dictatorship", "Monarchy", "Military Rule"],
-            "answer": "Rule of Law"
-        },
-        {
-            "question": "Fundamental Human Rights are usually enshrined in the:",
-            "options": ["Constitution", "Police Act", "Penal Code", "By-laws"],
-            "answer": "Constitution"
-        }
+        {"question": "Which of the following is a key characteristic of democracy?", "options": ["Rule of Law", "Dictatorship", "Monarchy", "Military Rule"], "answer": "Rule of Law"},
+        {"question": "Fundamental Human Rights are usually enshrined in the:", "options": ["Constitution", "Police Act", "Penal Code", "By-laws"], "answer": "Constitution"},
+        {"question": "A major consequence of political apathy in a society is:", "options": ["Good governance", "Poor leadership selection", "Economic boom", "Peace and order"], "answer": "Poor leadership selection"}
     ],
     "Digital Technology": [
-        {
-            "question": "What does CPU stand for?",
-            "options": ["Central Process Unit", "Central Processing Unit", "Computer Personal Unit", "Control Program Unit"],
-            "answer": "Central Processing Unit"
-        },
-        {
-            "question": "Which of these is an example of an operating system?",
-            "options": ["Microsoft Word", "Python", "Windows", "Google Chrome"],
-            "answer": "Windows"
-        }
+        {"question": "What does CPU stand for?", "options": ["Central Process Unit", "Central Processing Unit", "Computer Personal Unit", "Control Program Unit"], "answer": "Central Processing Unit"},
+        {"question": "Which of these is an example of an operating system?", "options": ["Microsoft Word", "Python", "Windows", "Google Chrome"], "answer": "Windows"},
+        {"question": "The brain of the computer is the:", "options": ["RAM", "Hard Drive", "CPU", "Monitor"], "answer": "CPU"},
+        {"question": "Which network topology connects all devices to a central hub or switch?", "options": ["Bus topology", "Ring topology", "Star topology", "Mesh topology"], "answer": "Star topology"}
     ],
     "Economics": [
-        {
-            "question": "What happens to demand when price increases (holding other factors constant)?",
-            "options": ["Increases", "Decreases", "Remains Constant", "Fluctuates"],
-            "answer": "Decreases"
-        },
-        {
-            "question": "Opportunity cost can be defined as:",
-            "options": ["Money spent on goods", "Real cost expressed in terms of forgone alternatives", "Total cost of production", "Government tax"],
-            "answer": "Real cost expressed in terms of forgone alternatives"
-        }
+        {"question": "What happens to demand when price increases (holding other factors constant)?", "options": ["Increases", "Decreases", "Remains Constant", "Fluctuates"], "answer": "Decreases"},
+        {"question": "Opportunity cost can be defined as:", "options": ["Money spent on goods", "Real cost expressed in terms of forgone alternatives", "Total cost of production", "Government tax"], "answer": "Real cost expressed in terms of forgone alternatives"},
+        {"question": "Inflation caused by excessive aggregate demand over supply is called:", "options": ["Cost-push inflation", "Demand-pull inflation", "Imported inflation", "Structural inflation"], "answer": "Demand-pull inflation"}
     ],
     "Geography": [
-        {
-            "question": "Which layer of the atmosphere contains the ozone layer?",
-            "options": ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"],
-            "answer": "Stratosphere"
-        },
-        {
-            "question": "Lines drawn on a map joining places of equal pressure are called:",
-            "options": ["Contours", "Isobars", "Isotherms", "Isohyets"],
-            "answer": "Isobars"
-        }
+        {"question": "Which layer of the atmosphere contains the ozone layer?", "options": ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"], "answer": "Stratosphere"},
+        {"question": "Lines drawn on a map joining places of equal pressure are called:", "options": ["Contours", "Isobars", "Isotherms", "Isohyets"], "answer": "Isobars"},
+        {"question": "The instrument used to measure atmospheric pressure is the:", "options": ["Thermometer", "Barometer", "Anemometer", "Rain gauge"], "answer": "Barometer"}
     ]
 }
 
@@ -139,10 +77,10 @@ waec_questions = {
 st.sidebar.title("🔐 Portal Login")
 role = st.sidebar.selectbox("Select Login Role", ["Student", "Teacher / Admin"])
 username = st.sidebar.text_input("Enter Your Name")
-password = st.sidebar.text_input("Enter Any Password of Choice", type="password")
+password = st.sidebar.text_input("Enter Any Password", type="password")
 
 if not username or not password:
-    st.warning("⚠️ Please enter both your name and any password to log in.")
+    st.warning("⚠️ Please enter your name and any password to log in.")
     st.stop()
 
 st.sidebar.success(f"Logged in as **{username}** ({role})")
@@ -246,7 +184,7 @@ else:
                     st.session_state.q_idx += 1
                     st.rerun()
                 else:
-                    st.info("You have reached the end of questions for this subject!")
+                    st.info("You have reached the last question for this subject! Try switching to another subject.")
 
         st.markdown("---")
         st.metric("Total Quiz Performance", f"{st.session_state.quiz_score} / {st.session_state.quiz_total} Correct")
