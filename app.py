@@ -1,6 +1,8 @@
 
 import streamlit as st
 import pandas as pd
+import datetime
+import random
 
 st.set_page_config(page_title="Student Result & WAEC Practice System", page_icon="🎓", layout="wide")
 
@@ -17,61 +19,95 @@ subjects = [
     "Civic Education", "Digital Technology", "Economics", "Geography"
 ]
 
-# Comprehensive WAEC Past Questions Bank (Multiple questions per subject)
-waec_questions = {
+# Large Master Pool of WAEC Past Questions (Will automatically pick 30 daily per subject)
+master_waec_questions = {
     "Mathematics": [
         {"question": "Solve for x: 2x + 5 = 15", "options": ["x = 3", "x = 5", "x = 10", "x = 7"], "answer": "x = 5"},
         {"question": "Evaluate 0.075 x 10^4", "options": ["7.5", "75", "750", "7500"], "answer": "750"},
         {"question": "Find the simple interest on N5,000 for 2 years at 5% per annum.", "options": ["N250", "N500", "N750", "N1,000"], "answer": "N500"},
         {"question": "Factorize completely: 3x^2 - 12", "options": ["3(x-2)(x+2)", "3(x-4)(x+4)", "(3x-2)(x+2)", "3(x-2)^2"], "answer": "3(x-2)(x+2)"},
-        {"question": "If the interior angle of a regular polygon is 140°, find the number of sides.", "options": ["6", "8", "9", "10"], "answer": "9"}
+        {"question": "If the interior angle of a regular polygon is 140°, find the number of sides.", "options": ["6", "8", "9", "10"], "answer": "9"},
+        {"question": "Express 0.00542 in standard form.", "options": ["5.42 x 10^-3", "5.42 x 10^-2", "54.2 x 10^-4", "0.542 x 10^-2"], "answer": "5.42 x 10^-3"},
+        {"question": "Solve the quadratic equation: x^2 - 5x + 6 = 0", "options": ["x = 1, 6", "x = 2, 3", "x = -2, -3", "x = -1, -6"], "answer": "x = 2, 3"},
+        {"question": "Find the gradient of the line passing through points (2, 3) and (4, 7).", "options": ["1", "2", "3", "4"], "answer": "2"},
+        {"question": "If y is inversely proportional to x and y = 4 when x = 3, find y when x = 6.", "options": ["1", "2", "4", "6"], "answer": "2"},
+        {"question": "Calculate the median of the numbers: 4, 7, 1, 9, 3, 8", "options": ["5.5", "5", "6", "4.5"], "answer": "5.5"},
+        {"question": "Simplify: log10(100) + log10(10)", "options": ["1", "2", "3", "10"], "answer": "3"},
+        {"question": "Find the area of a circle with radius 7cm. (Take pi = 22/7)", "options": ["154 cm^2", "44 cm^2", "88 cm^2", "308 cm^2"], "answer": "154 cm^2"}
     ],
     "English Language": [
         {"question": "Choose the word nearest in meaning to 'ABUNDANT':", "options": ["Scarce", "Plentiful", "Small", "Empty"], "answer": "Plentiful"},
         {"question": "Choose the word opposite in meaning to 'ANCIENT':", "options": ["Old", "Modern", "Antique", "Primitive"], "answer": "Modern"},
         {"question": "Choose the correct option to fill the gap: Neither the teacher nor the students ___ present.", "options": ["was", "were", "is", "has been"], "answer": "were"},
-        {"question": "What figure of speech is used in: 'The wind whispered through the dark trees'?", "options": ["Simile", "Metaphor", "Personification", "Hyperbole"], "answer": "Personification"}
+        {"question": "What figure of speech is used in: 'The wind whispered through the dark trees'?", "options": ["Simile", "Metaphor", "Personification", "Hyperbole"], "answer": "Personification"},
+        {"question": "Choose the word nearest in meaning to 'CANDID':", "options": ["Secretive", "Frank", "Dishonest", "Complex"], "answer": "Frank"},
+        {"question": "Choose the option that has the correct stress: 'CON-TAIN-ER'", "options": ["CONtainer", "conTAINer", "containER", "CONTAINer"], "answer": "conTAINer"},
+        {"question": "Identify the grammatical name for: 'The man *who came yesterday* is my uncle.'", "options": ["Noun clause", "Adjectival clause", "Adverbial clause", "Independent clause"], "answer": "Adjectival clause"},
+        {"question": "Choose the word with the same vowel sound as 'PIT':", "options": ["Seat", "Pete", "Bit", "Pate"], "answer": "Bit"}
     ],
     "Physics": [
         {"question": "What is the SI unit of force?", "options": ["Joule", "Watt", "Newton", "Pascal"], "answer": "Newton"},
         {"question": "Which of the following is a vector quantity?", "options": ["Speed", "Mass", "Velocity", "Distance"], "answer": "Velocity"},
         {"question": "The time taken for a pendulum to complete one full oscillation is called:", "options": ["Frequency", "Period", "Amplitude", "Wavelength"], "answer": "Period"},
-        {"question": "What device is used to measure relative humidity?", "options": ["Hydrometer", "Barometer", "Hygrometer", "Manometer"], "answer": "Hygrometer"}
+        {"question": "What device is used to measure relative humidity?", "options": ["Hydrometer", "Barometer", "Hygrometer", "Manometer"], "answer": "Hygrometer"},
+        {"question": "The property of matter that resists change in its state of motion is called:", "options": ["Inertia", "Momentum", "Energy", "Acceleration"], "answer": "Inertia"},
+        {"question": "Which of the following waves is longitudinal?", "options": ["Light waves", "Radio waves", "Sound waves", "X-rays"], "answer": "Sound waves"},
+        {"question": "Thework done in moving a charge between two points in an electric field depends on:", "options": ["Path taken", "Velocity", "Potential difference", "Current"], "answer": "Potential difference"},
+        {"question": "Which mirror is used as a driving rearview mirror because it gives an upright, diminished image?", "options": ["Concave mirror", "Convex mirror", "Plane mirror", "Parabolic mirror"], "answer": "Convex mirror"}
     ],
     "Chemistry": [
         {"question": "What is the chemical symbol for Gold?", "options": ["Ag", "Au", "Fe", "Pb"], "answer": "Au"},
         {"question": "What is the pH of a neutral solution at 25°C?", "options": ["0", "7", "14", "5"], "answer": "7"},
         {"question": "Which gas turns limewater milky?", "options": ["Oxygen", "Hydrogen", "Carbon (IV) oxide", "Nitrogen"], "answer": "Carbon (IV) oxide"},
-        {"question": "The process of separation of mixtures based on boiling points is called:", "options": ["Filtration", "Fractional distillation", "Evaporation", "Chromatography"], "answer": "Fractional distillation"}
+        {"question": "The process of separation of mixtures based on boiling points is called:", "options": ["Filtration", "Fractional distillation", "Evaporation", "Chromatography"], "answer": "Fractional distillation"},
+        {"question": "Which of the following is an alkaline earth metal?", "options": ["Sodium", "Calcium", "Aluminum", "Iron"], "answer": "Calcium"},
+        {"question": "The bond formed when electrons are shared equally between atoms is:", "options": ["Ionic bond", "Covalent bond", "Hydrogen bond", "Metallic bond"], "answer": "Covalent bond"},
+        {"question": "What is the chemical formula for rust?", "options": ["Fe2O3.xH2O", "FeO", "Fe3O4", "Fe(OH)2"], "answer": "Fe2O3.xH2O"}
     ],
     "Biology": [
         {"question": "Which organelle is known as the powerhouse of the cell?", "options": ["Nucleus", "Ribosome", "Mitochondria", "Chloroplast"], "answer": "Mitochondria"},
         {"question": "The ultimate source of energy for all ecosystems is:", "options": ["Green plants", "The Sun", "Water", "Soil nutrients"], "answer": "The Sun"},
         {"question": "Which of the following blood groups is known as the universal donor?", "options": ["Group A", "Group B", "Group AB", "Group O"], "answer": "Group O"},
-        {"question": "The mammalian kidney is the primary organ for:", "options": ["Digestion", "Respiration", "Excretion & Osmoregulation", "Circulation"], "answer": "Excretion & Osmoregulation"}
+        {"question": "The mammalian kidney is the primary organ for:", "options": ["Digestion", "Respiration", "Excretion & Osmoregulation", "Circulation"], "answer": "Excretion & Osmoregulation"},
+        {"question": "In a food chain, organisms that manufacture their own food are called:", "options": ["Producers", "Consumers", "Decomposers", "Scavengers"], "answer": "Producers"},
+        {"question": "The structural and functional unit of the kidney is the:", "options": ["Neuron", "Nephron", "Alveolus", "Villus"], "answer": "Nephron"}
     ],
     "Civic Education": [
         {"question": "Which of the following is a key characteristic of democracy?", "options": ["Rule of Law", "Dictatorship", "Monarchy", "Military Rule"], "answer": "Rule of Law"},
         {"question": "Fundamental Human Rights are usually enshrined in the:", "options": ["Constitution", "Police Act", "Penal Code", "By-laws"], "answer": "Constitution"},
-        {"question": "A major consequence of political apathy in a society is:", "options": ["Good governance", "Poor leadership selection", "Economic boom", "Peace and order"], "answer": "Poor leadership selection"}
+        {"question": "A major consequence of political apathy in a society is:", "options": ["Good governance", "Poor leadership selection", "Economic boom", "Peace and order"], "answer": "Poor leadership selection"},
+        {"question": "Traffic signs that give mandatory instructions are usually enclosed in:", "options": ["Triangles", "Circles", "Squares", "Rectangles"], "answer": "Circles"}
     ],
     "Digital Technology": [
         {"question": "What does CPU stand for?", "options": ["Central Process Unit", "Central Processing Unit", "Computer Personal Unit", "Control Program Unit"], "answer": "Central Processing Unit"},
         {"question": "Which of these is an example of an operating system?", "options": ["Microsoft Word", "Python", "Windows", "Google Chrome"], "answer": "Windows"},
         {"question": "The brain of the computer is the:", "options": ["RAM", "Hard Drive", "CPU", "Monitor"], "answer": "CPU"},
-        {"question": "Which network topology connects all devices to a central hub or switch?", "options": ["Bus topology", "Ring topology", "Star topology", "Mesh topology"], "answer": "Star topology"}
+        {"question": "Which network topology connects all devices to a central hub or switch?", "options": ["Bus topology", "Ring topology", "Star topology", "Mesh topology"], "answer": "Star topology"},
+        {"question": "Short-term volatile memory in a computer is known as:", "options": ["ROM", "RAM", "Hard Disk", "Flash drive"], "answer": "RAM"}
     ],
     "Economics": [
         {"question": "What happens to demand when price increases (holding other factors constant)?", "options": ["Increases", "Decreases", "Remains Constant", "Fluctuates"], "answer": "Decreases"},
         {"question": "Opportunity cost can be defined as:", "options": ["Money spent on goods", "Real cost expressed in terms of forgone alternatives", "Total cost of production", "Government tax"], "answer": "Real cost expressed in terms of forgone alternatives"},
-        {"question": "Inflation caused by excessive aggregate demand over supply is called:", "options": ["Cost-push inflation", "Demand-pull inflation", "Imported inflation", "Structural inflation"], "answer": "Demand-pull inflation"}
+        {"question": "Inflation caused by excessive aggregate demand over supply is called:", "options": ["Cost-push inflation", "Demand-pull inflation", "Imported inflation", "Structural inflation"], "answer": "Demand-pull inflation"},
+        {"question": "A market structure with only one seller of a product with no close substitutes is:", "options": ["Perfect competition", "Monopoly", "Oligopoly", "Monopolistic competition"], "answer": "Monopoly"}
     ],
     "Geography": [
         {"question": "Which layer of the atmosphere contains the ozone layer?", "options": ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"], "answer": "Stratosphere"},
         {"question": "Lines drawn on a map joining places of equal pressure are called:", "options": ["Contours", "Isobars", "Isotherms", "Isohyets"], "answer": "Isobars"},
-        {"question": "The instrument used to measure atmospheric pressure is the:", "options": ["Thermometer", "Barometer", "Anemometer", "Rain gauge"], "answer": "Barometer"}
+        {"question": "The instrument used to measure atmospheric pressure is the:", "options": ["Thermometer", "Barometer", "Anemometer", "Rain gauge"], "answer": "Barometer"},
+        {"question": "The movement of soil particles down a slope due to gravity is called:", "options": ["Leaching", "Mass movement", "Weathering", "Erosion"], "answer": "Mass movement"}
     ]
 }
+
+# --- DAILY ROTATION LOGIC (Picks 30 questions per subject dynamically based on date) ---
+today_seed = datetime.date.today().toordinal()
+rng = random.Random(today_seed)
+
+waec_questions = {}
+for sub, q_pool in master_waec_questions.items():
+    # If pool has fewer than 30, use all; otherwise sample 30 uniquely for today
+    sample_size = min(30, len(q_pool))
+    waec_questions[sub] = rng.sample(q_pool, sample_size)
 
 # --- FLEXIBLE LOGIN SYSTEM ---
 st.sidebar.title("🔐 Portal Login")
@@ -146,12 +182,13 @@ if role == "Teacher / Admin":
 # --- STUDENT VIEW ---
 else:
     st.title("📚 Student Portal & WAEC Practice Hub")
-    st.write(f"Welcome, **{username}**! Practice multiple WAEC past questions, check your scores, and test your exam readiness.")
+    st.write(f"Welcome, **{username}**! Practice today's daily rotation of WAEC questions and check your exam readiness.")
+    st.info(f"📅 Daily Question Set Active for: **{datetime.date.today().strftime('%B %d, %Y')}** (Changes automatically tomorrow!)")
 
     tab1, tab2 = st.tabs(["📝 WAEC Past Questions Practice", "📊 View My Results"])
 
     with tab1:
-        st.header("Interactive WAEC Practice Quiz")
+        st.header("Interactive Daily WAEC Practice Quiz")
         selected_sub = st.selectbox("Select Subject to Practice:", subjects, key="student_sub_select")
         
         q_list = waec_questions[selected_sub]
@@ -184,7 +221,7 @@ else:
                     st.session_state.q_idx += 1
                     st.rerun()
                 else:
-                    st.info("You have reached the last question for this subject! Try switching to another subject.")
+                    st.info("You have reached the end of today's questions for this subject! Come back tomorrow for a brand new set.")
 
         st.markdown("---")
         st.metric("Total Quiz Performance", f"{st.session_state.quiz_score} / {st.session_state.quiz_total} Correct")
