@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 
@@ -10,70 +11,154 @@ if "quiz_score" not in st.session_state:
     st.session_state.quiz_score = 0
 if "quiz_total" not in st.session_state:
     st.session_state.quiz_total = 0
+if "current_q_index" not in st.session_state:
+    st.session_state.current_q_index = 0
 
 subjects = [
     "Mathematics", "English Language", "Physics", "Chemistry", "Biology",
     "Civic Education", "Digital Technology", "Economics", "Geography"
 ]
 
+# Expanded WAEC Past Questions Bank
 waec_questions = {
-    "Mathematics": {
-        "question": "Solve for x: 2x + 5 = 15",
-        "options": ["x = 3", "x = 5", "x = 10", "x = 7"],
-        "answer": "x = 5"
-    },
-    "English Language": {
-        "question": "Choose the word nearest in meaning to 'ABUNDANT':",
-        "options": ["Scarce", "Plentiful", "Small", "Empty"],
-        "answer": "Plentiful"
-    },
-    "Physics": {
-        "question": "What is the SI unit of force?",
-        "options": ["Joule", "Watt", "Newton", "Pascal"],
-        "answer": "Newton"
-    },
-    "Chemistry": {
-        "question": "What is the chemical symbol for Gold?",
-        "options": ["Ag", "Au", "Fe", "Pb"],
-        "answer": "Au"
-    },
-    "Biology": {
-        "question": "Which organelle is known as the powerhouse of the cell?",
-        "options": ["Nucleus", "Ribosome", "Mitochondria", "Chloroplast"],
-        "answer": "Mitochondria"
-    },
-    "Civic Education": {
-        "question": "Which of the following is a key characteristic of democracy?",
-        "options": ["Rule of Law", "Dictatorship", "Monarchy", "Military Rule"],
-        "answer": "Rule of Law"
-    },
-    "Digital Technology": {
-        "question": "What does CPU stand for?",
-        "options": ["Central Process Unit", "Central Processing Unit", "Computer Personal Unit", "Control Program Unit"],
-        "answer": "Central Processing Unit"
-    },
-    "Economics": {
-        "question": "What happens to demand when price increases (holding other factors constant)?",
-        "options": ["Increases", "Decreases", "Remains Constant", "Fluctuate"],
-        "answer": "Decreases"
-    },
-    "Geography": {
-        "question": "Which layer of the atmosphere contains the ozone layer?",
-        "options": ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"],
-        "answer": "Stratosphere"
-    }
+    "Mathematics": [
+        {
+            "question": "Solve for x: 2x + 5 = 15",
+            "options": ["x = 3", "x = 5", "x = 10", "x = 7"],
+            "answer": "x = 5"
+        },
+        {
+            "question": "Evaluate 0.075 x 10^4",
+            "options": ["7.5", "75", "750", "7500"],
+            "answer": "750"
+        },
+        {
+            "question": "Find the simple interest on N5,000 for 2 years at 5% per annum.",
+            "options": ["N250", "N500", "N750", "N1,000"],
+            "answer": "N500"
+        }
+    ],
+    "English Language": [
+        {
+            "question": "Choose the word nearest in meaning to 'ABUNDANT':",
+            "options": ["Scarce", "Plentiful", "Small", "Empty"],
+            "answer": "Plentiful"
+        },
+        {
+            "question": "Choose the word that is opposite in meaning to 'ANCIENT':",
+            "options": ["Old", "Modern", "Antique", "Primitive"],
+            "answer": "Modern"
+        }
+    ],
+    "Physics": [
+        {
+            "question": "What is the SI unit of force?",
+            "options": ["Joule", "Watt", "Newton", "Pascal"],
+            "answer": "Newton"
+        },
+        {
+            "question": "Which of the following is a vector quantity?",
+            "options": ["Speed", "Mass", "Velocity", "Distance"],
+            "answer": "Velocity"
+        }
+    ],
+    "Chemistry": [
+        {
+            "question": "What is the chemical symbol for Gold?",
+            "options": ["Ag", "Au", "Fe", "Pb"],
+            "answer": "Au"
+        },
+        {
+            "question": "What is the pH of a neutral solution at 25°C?",
+            "options": ["0", "7", "14", "5"],
+            "answer": "7"
+        }
+    ],
+    "Biology": [
+        {
+            "question": "Which organelle is known as the powerhouse of the cell?",
+            "options": ["Nucleus", "Ribosome", "Mitochondria", "Chloroplast"],
+            "answer": "Mitochondria"
+        },
+        {
+            "question": "The ultimate source of energy for all ecosystems is:",
+            "options": ["Green plants", "The Sun", "Water", "Soil nutrients"],
+            "answer": "The Sun"
+        }
+    ],
+    "Civic Education": [
+        {
+            "question": "Which of the following is a key characteristic of democracy?",
+            "options": ["Rule of Law", "Dictatorship", "Monarchy", "Military Rule"],
+            "answer": "Rule of Law"
+        },
+        {
+            "question": "Fundamental Human Rights are usually enshrined in the:",
+            "options": ["Constitution", "Police Act", "Penal Code", "By-laws"],
+            "answer": "Constitution"
+        }
+    ],
+    "Digital Technology": [
+        {
+            "question": "What does CPU stand for?",
+            "options": ["Central Process Unit", "Central Processing Unit", "Computer Personal Unit", "Control Program Unit"],
+            "answer": "Central Processing Unit"
+        },
+        {
+            "question": "Which of these is an example of an operating system?",
+            "options": ["Microsoft Word", "Python", "Windows", "Google Chrome"],
+            "answer": "Windows"
+        }
+    ],
+    "Economics": [
+        {
+            "question": "What happens to demand when price increases (holding other factors constant)?",
+            "options": ["Increases", "Decreases", "Remains Constant", "Fluctuates"],
+            "answer": "Decreases"
+        },
+        {
+            "question": "Opportunity cost can be defined as:",
+            "options": ["Money spent on goods", "Real cost expressed in terms of forgone alternatives", "Total cost of production", "Government tax"],
+            "answer": "Real cost expressed in terms of forgone alternatives"
+        }
+    ],
+    "Geography": [
+        {
+            "question": "Which layer of the atmosphere contains the ozone layer?",
+            "options": ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"],
+            "answer": "Stratosphere"
+        },
+        {
+            "question": "Lines drawn on a map joining places of equal pressure are called:",
+            "options": ["Contours", "Isobars", "Isotherms", "Isohyets"],
+            "answer": "Isobars"
+        }
+    ]
 }
 
-# --- LOGIN SYSTEM ---
+# --- LOGIN SYSTEM WITH PASSWORD ---
 st.sidebar.title("🔐 Portal Login")
 role = st.sidebar.selectbox("Select Login Role", ["Student", "Teacher / Admin"])
 username = st.sidebar.text_input("Enter Your Name")
+password = st.sidebar.text_input("Enter Password", type="password")
 
-if not username:
-    st.warning("⚠️ Please enter your name in the sidebar to log into the portal.")
+# Define credentials/passwords
+TEACHER_PASSWORD = "teacher123"
+STUDENT_PASSWORD = "student123"
+
+if not username or not password:
+    st.warning("⚠️ Please enter both your name and password in the sidebar to log in.")
     st.stop()
-else:
-    st.sidebar.success(f"Logged in as **{username}** ({role})")
+
+# Validate passwords
+if role == "Teacher / Admin" and password != TEACHER_PASSWORD:
+    st.error("❌ Incorrect password for Teacher / Admin.")
+    st.stop()
+elif role == "Student" and password != STUDENT_PASSWORD:
+    st.error("❌ Incorrect password for Student.")
+    st.stop()
+
+st.sidebar.success(f"Logged in as **{username}** ({role})")
 
 # --- TEACHER / ADMIN VIEW ---
 if role == "Teacher / Admin":
@@ -136,7 +221,7 @@ if role == "Teacher / Admin":
 # --- STUDENT VIEW ---
 else:
     st.title("📚 Student Portal & WAEC Practice Hub")
-    st.write(f"Welcome, **{username}**! Practice past WAEC questions, check your scores, and test your exam readiness.")
+    st.write(f"Welcome, **{username}**! Practice multiple WAEC past questions, check your scores, and test your exam readiness.")
 
     tab1, tab2 = st.tabs(["📝 WAEC Past Questions Practice", "📊 View My Results"])
 
@@ -144,22 +229,40 @@ else:
         st.header("Interactive WAEC Practice Quiz")
         selected_sub = st.selectbox("Select Subject to Practice:", subjects, key="student_sub_select")
         
-        q_data = waec_questions[selected_sub]
-        st.markdown(f"### Question for {selected_sub}:")
+        q_list = waec_questions[selected_sub]
+        
+        if "last_sub" not in st.session_state or st.session_state.last_sub != selected_sub:
+            st.session_state.last_sub = selected_sub
+            st.session_state.q_idx = 0
+
+        q_idx = st.session_state.q_idx
+        q_data = q_list[q_idx]
+
+        st.markdown(f"### Question {q_idx + 1} of {len(q_list)} ({selected_sub})")
         st.info(q_data['question'])
         
-        user_choice = st.radio("Choose your answer:", q_data["options"], key=f"quiz_choice_{selected_sub}")
+        user_choice = st.radio("Choose your answer:", q_data["options"], key=f"q_choice_{selected_sub}_{q_idx}")
         
-        if st.button("Submit Answer", key=f"submit_quiz_{selected_sub}"):
-            st.session_state.quiz_total += 1
-            if user_choice == q_data["answer"]:
-                st.session_state.quiz_score += 1
-                st.success("🎉 Correct Answer! Great job.")
-            else:
-                st.error(f"❌ Incorrect. The correct answer is: **{q_data['answer']}**")
+        col_btn1, col_btn2 = st.columns(2)
+        with col_btn1:
+            if st.button("Submit Answer", key=f"sub_ans_{selected_sub}_{q_idx}"):
+                st.session_state.quiz_total += 1
+                if user_choice == q_data["answer"]:
+                    st.session_state.quiz_score += 1
+                    st.success("🎉 Correct Answer! Great job.")
+                else:
+                    st.error(f"❌ Incorrect. The correct answer is: **{q_data['answer']}**")
+        
+        with col_btn2:
+            if st.button("Next Question ➡️", key=f"next_q_{selected_sub}_{q_idx}"):
+                if st.session_state.q_idx < len(q_list) - 1:
+                    st.session_state.q_idx += 1
+                    st.rerun()
+                else:
+                    st.info("You have reached the end of questions for this subject!")
 
         st.markdown("---")
-        st.metric("Your Quiz Score", f"{st.session_state.quiz_score} / {st.session_state.quiz_total} Correct")
+        st.metric("Total Quiz Performance", f"{st.session_state.quiz_score} / {st.session_state.quiz_total} Correct")
 
     with tab2:
         st.header("Your Saved Academic Records")
