@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 
@@ -136,26 +135,14 @@ waec_questions = {
     ]
 }
 
-# --- LOGIN SYSTEM WITH PASSWORD ---
+# --- FLEXIBLE LOGIN SYSTEM ---
 st.sidebar.title("🔐 Portal Login")
 role = st.sidebar.selectbox("Select Login Role", ["Student", "Teacher / Admin"])
 username = st.sidebar.text_input("Enter Your Name")
-password = st.sidebar.text_input("Enter Password", type="password")
-
-# Define credentials/passwords
-TEACHER_PASSWORD = "teacher123"
-STUDENT_PASSWORD = "student123"
+password = st.sidebar.text_input("Enter Any Password of Choice", type="password")
 
 if not username or not password:
-    st.warning("⚠️ Please enter both your name and password in the sidebar to log in.")
-    st.stop()
-
-# Validate passwords
-if role == "Teacher / Admin" and password != TEACHER_PASSWORD:
-    st.error("❌ Incorrect password for Teacher / Admin.")
-    st.stop()
-elif role == "Student" and password != STUDENT_PASSWORD:
-    st.error("❌ Incorrect password for Student.")
+    st.warning("⚠️ Please enter both your name and any password to log in.")
     st.stop()
 
 st.sidebar.success(f"Logged in as **{username}** ({role})")
